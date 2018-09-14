@@ -1,0 +1,51 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+```
+
+# Fetch Data
+```{r}
+# import muc_opd helper functions
+source("./muc-opd-helper-functions.R")
+
+bike_counter_resource_id <- "211e882d-fadd-468a-bf8a-0014ae65a393"
+
+resource_ids_15_min <- list(
+  january = "767008cc-34da-42b0-b813-e900e2be9d68",
+  february = "02d5d30f-b63e-4cfc-98c5-4e0ac11586f1",
+  march = "43be98e1-e73f-41e3-9327-cf6f7519b90b",
+  april = "725b8a9b-78c8-4f93-b5a9-3f1a0bd766d8",
+  mai = "8dd210a2-cd4d-406e-b3be-3af861a9c404",
+  june = "9d4d7922-f232-4a46-bb26-e23dec7520a1",
+  july = "fb305c18-68db-4e95-9dcd-0cf7d163b496",
+  august = "96f0566e-1811-4e3e-9cdb-e7bc8cddb206"
+)
+
+resource_ids_daily <- list(
+  january = "1e26f02e-4e77-48a9-bc40-015b86d190cb",
+  february = "bc25c027-511a-424d-9be9-c1983d2da021",
+  march = "f1694c61-41e0-47aa-94c0-57992929a6c1",
+  april = "68e6a9e0-2b8c-4e03-9e19-c0b6e09405ae",
+  mai = "b4e6ddd3-715c-4e39-addf-e79e8a1cb02d",
+  june = "6a2b9e10-b937-48bf-b09a-631a51f8cdd4",
+  july = "7368547c-7118-49bf-9286-e510ea621c58",
+  august = "cefe233a-a6fa-4b43-92ed-a2266994ff68"
+)
+
+bike_counter <- muc_odp_fetch_data(ressource_id = bike_counter_resource_id)
+
+bike_cnt_15_min <- bind_rows(
+  lapply(resource_ids_15_min, function(x) muc_odp_fetch_data(ressource_id = x))
+)
+
+bike_cnt_day <-  bind_rows(
+  lapply(resource_ids_daily, function(x) muc_odp_fetch_data(ressource_id = x))
+)
+```
+
+
+# Exploratory Analysis
