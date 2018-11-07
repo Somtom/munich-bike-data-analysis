@@ -12,6 +12,9 @@ tags:
   - Bike Data
 output:
   html_notebook
+image: https://somtom.github.io/img/preview-images/munich-bike-data-infographic-preview.png
+header:
+  image: "./headers/munich-bike-data-infographic-header.png"
 ---
 ![](2018-11-03-munich-bike-data-info-graphic_files/infographic/insights_on_bike_traffic.png)
 
