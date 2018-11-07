@@ -117,7 +117,8 @@ Now, after setting everything up, we need to load the data. Since I got some add
 ## Helper Functions
 
 To fetch the data via API, I wrote some helper functions. This functions will also help us with the
-preprocessing later. The functions can be found in the Github project. 
+preprocessing later. The functions can be found in the 
+[Github project](https://github.com/Somtom/munich-bike-data-analysis). 
 
 ```{r helper_functions, echo=FALSE}
 convert_to_default_dt_string <- function(datetime_val = NA, date_val) {
@@ -506,7 +507,7 @@ class(bike_cnt_15_min$time) <- "POSIXct"
 
 ## (4) Remove Duplicates and Save Converted Data
 
-Finally we remove the duplicates from our data set and save the converted data
+Finally, we remove the duplicates from our data set and save the converted data.
 ```{r remove duplicates, eval=FALSE}
 bike_cnt_15_min <- unique(bike_cnt_15_min)
 ```
@@ -613,7 +614,7 @@ On average the stations count **`r round(mean(bike_cnt_15_min$gesamt))` bike per
 that they are quiet high compared to the means. Especially the 15 minute count maximum is 
 **`r round(max(bike_cnt_15_min$gesamt) / mean(bike_cnt_15_min$gesamt))`** times as high as the mean.
 We might find some interesting events being represented by these 
-high counts, but we will dive deeper into that later.
+high counts but we will dive deeper into that later.
 
 How does the summary data differ if we calculate it per station?
 We first start with the 15 minute data.
@@ -671,11 +672,11 @@ Kreuther.
 
 ### How Many People Are Riding in the Wrong Direction at Arnulf Street? {#wrong_direction}
 
-Station **Arnulf** has a special characteristic: The counter is located on a one way bicycle lane.
+Station **Arnulf Street** has a special characteristic: The counter is located on a one way bicycle lane.
 Thus, normally it should only measure counts for one direction, which is into city center.
 
 Luckily it is also able to count all bikers who ride into the wrong direction, which we can
-use for our analysis. So let's find out, which share of the total counts is due to bikers riding the
+use for our analysis. So let's find out which share of the total counts is due to bikers riding the
 wrong direction.
 
 
@@ -690,6 +691,8 @@ wrong_way_drivers  %>% knitr::kable(digits = 1)
 
 The data suggests that on average **`r round(wrong_way_drivers$mean, 1)` percent**
 of daily counted bikes at Arnulf Street were driving on the **wrong side of the road**.
+Interestingly, there must have been at least one day where all bikes were riding on
+the wrong side of the road since we observed a maximum of 100%.
 
 ## Count Records {#count_records}
 
@@ -709,14 +712,14 @@ top_10_day %>%
   knitr::kable(digits = 1)
 ```
 
-That is interesting. Station Olympia takes the top 3 places with counts above 10 thousand, although 
+That is interesting: Station Olympia takes the top 3 places with counts above 10 thousand, although 
 it only made the third place when we calculated the median counts per station earlier. After some
 research I found out that these top 3 counts were caused by the same event, namely the
 **24h Mountainbike Race**, which takes place in Olympia Park every year. Since the route is changed
 from year to year, the counting station is not always on the track. Thus, we don't see
 these record counts every year.
 
-Let's plot the 15 minute data for the events in the two years, we observed these high counts:
+Let's plot the 15 minute data for the events in the two years in which we observed these high counts:
 
 ```{r plot_mtb_race, echo=FALSE}
 olympia_15_min_mean <- station_summary_15_min %>% 
@@ -736,7 +739,7 @@ bike_cnt_15_min %>%
   geom_hline(yintercept = olympia_15_min_mean$avg,lty = 2) +
   annotate(
     geom = "text", 
-    label = paste0("Average 15 minute\ncount for station Olympia:\n",
+    label = paste0("Average 15 minute\ncount for station\nOlympia:",
                    olympia_15_min_mean$avg,
                    " bikes"), 
     x = as.POSIXct("2010-06-26"),
@@ -761,7 +764,7 @@ bike_cnt_15_min %>%
   geom_hline(yintercept = olympia_15_min_mean$avg,lty = 2) +
   annotate(
     geom = "text", 
-    label = paste0("Average 15 minute\ncount for station Olympia:\n",
+    label = paste0("Average 15 minute\ncount for station\nOlympia:",
                    olympia_15_min_mean$avg,
                    " bikes"), 
     x = as.POSIXct("2012-06-09"),
@@ -774,7 +777,7 @@ bike_cnt_15_min %>%
 ```
 
 
-Now, we also create a top 10 list for the 15 minute counts:
+Now we also create a top 10 list for the 15 minute counts:
 ```{r top_10_15_minute_counts}
 # 15 Minute Counts
 top_10_15_min <- bike_cnt_15_min %>% 
@@ -788,13 +791,13 @@ top_10_15_min  %>%
 
 If we have a closer look, we only can find one of our daily count top 10 candidates in this list,
 namely the **2017-06-09** on the 6th place. Normally you would suppose the date with highest 15
-minute counts to also be listed in the daily count top 10, if the high counts were not due to
+minute counts to also be listed in the daily count top 10 if the high counts were not due to
 a short time event. So what happened on the 3rd September
 2017 when a 15 minute bike count of **1157** was recorded? 
 
 This picture from [radlhaupstadt.muenchen.de](https://radlhauptstadt.muenchen.de/) gives you a hint:
 
-![Picture source: radlhauptstadt.muenchen.de](https://radlhauptstadt.muenchen.de/fileadmin/_processed_/0/c/csm_2017-09-03-Radlhauptstadt-Ringparade-Simone-Naumann-MG_3451-Edit_841d8ba11b.jpg)
+![Picture source: radlhauptstadt.muenchen.de](2018-11-03-munich-bike-data-info-graphic_files/img/ringparade.jpg)
 
 On that day the so called
 [Münchner Ringparade](https://radlhauptstadt.muenchen.de/mitradeln/muenchner-ringparade/)
@@ -873,20 +876,21 @@ bike_cnt_day %>%
 
 There is definitely a clear seasonal pattern which is similar across all stations. As one would 
 expect, there are higher bike counts during the summer months and lower counts during winter months.
-However, we also see some individual trends or characteristics for some stations:
+However, we also see individual trends or characteristics for some stations:
 
 * Station **Hirsch** shows a ongoing trend of rising bike counts from year to year
-* At **Arnulf Street's** counting station one can see two peak years in 2013 and 2014. This peak 
+* At **Arnulf Street's** counting station one can see two peak years in 2013 and 2014. These peaks
 could be due to a railway construction site which affected parts of the trains going into city center.
 * Station **Kreuther** showed some high counts at the beginning of 2013 and then no data for
 the rest of the year. Here the counting station was affected by a construction site when a separate bicycle
 path was created. After that, bikes on the sidewalk were not counted anymore.
-* One can clearly see the some events taking place in **Olympia Park** represented by peaks in the data
+This is why daily bike count level dropped afterwards.
+* One can clearly see the events taking place in **Olympia Park** represented by peaks in the data
 
 When we plot the bike count distribution for each month, we see that **highest median bike 
 counts occur in the Month July**. However, the maximum counts had been recorded in June. 
 These are due to some of the record events mentioned earlier, though. 
-Thus they need to be interpreted as outliers
+Thus, they need to be interpreted as outliers
 
 
 ```{r daily_count_month_wise_distribution, echo=FALSE}
@@ -895,7 +899,7 @@ bike_cnt_day %>%
   mutate(month = month(datum, label = TRUE)) %>% 
   ggplot() +
   geom_boxplot(aes(x = month, y = gesamt), color = plot_colors[2]) +
-  ggtitle("In general, highest bike counts occur during Juli.",
+  ggtitle("In general, highest bike counts occur during July.",
           "However, the maximum counts are represented by some outliers in June caused by special events") +
   xlab("Month") +
   ylab("Bikes Per Day") +
@@ -925,7 +929,7 @@ bike_cnt_day %>%
 ### Temperature and Weather on Days with Maximum Counts
 Now we use the weather data we have (at least for the days where they are not missing)
 and try to characterize the days with highest bike counts.
-We look at the distribution of measured values within each weather variable **for the month Juli**.
+We look at the distribution of measured values within each weather variable **for the month July**.
 
 To do so we group the bike counts into 4 categories:
 
@@ -937,7 +941,7 @@ To do so we group the bike counts into 4 categories:
 We than will have a closer look into the **"Highest 25%"** group and the weather parameters 
 measured on these days.
 
-To make the data comparable between stations we perform the following steps:
+To make the data comparable between stations, we perform the following steps:
 
 1. Removing outliers by filtering for bike counts below the 99% percentile for each station   
 2. Scaling the daily counts from each station by dividing the counts by each station's
@@ -1094,7 +1098,7 @@ We can see that the 15 minute count patterns clearly differ between weekend days
 There are two clear commuting peaks during the week. However, there still seems to be regular
 traffic between these peaks.   
 We used the median 15 minute bike count across all stations for the previous plot.
-But will we still see the same pattern if we look at each station separately?
+But, will we still see the same pattern if we look at each station separately?
 
 ```{r 15_min_plot_weekend_week_per_station, fig.height=10, fig.width=13, echo=FALSE}
 
@@ -1133,7 +1137,8 @@ suppressMessages({bike_cnt_15_min  %>%
                   " during the week and on weekends"),
             "Nevertheless, stations show different commuting direction characteristics druing the week") +
     my_theme +
-    theme(panel.border = element_rect(fill = FALSE)) +
+    theme(panel.border = element_rect(fill = FALSE),
+          title = element_text(size = 15)) +
     scale_color_manual(values = c(plot_colors[2], plot_colors[4])) +
     scale_fill_manual(values = c(plot_colors[2], plot_colors[4])) +
     labs(fill = "Direction", color = "Direction")})
@@ -1152,7 +1157,7 @@ the afternoon
 3. Stations with similar patterns for traffic into- and out of city center
     * Olympia
   
-We cannot really tell for Arnulf Street, but it looks like the peaks in the morning and in the
+We cannot really tell for Arnulf Street but it looks like the peaks in the morning and in the
 afternoon are similar for the only measured direction (into center). This would make it fall
 into class 3.
 
@@ -1162,7 +1167,7 @@ To create a really basic model of the commuting traffic, we will make the follow
 *Traffic during week is the result of commuting traffic and the normal traffic which is represented
 by the weekend data.* 
 Under this assumption subtracting the 15 minute weekend counts from the 15 minute counts during 
-the week gives us the commuting part. We are going to create a loess model for each the weekend
+the week gives us the commuting part. We are going to create a `loess` model for each the weekend
 and the week counts for that purpose. 
 
 ```{r calculating_commuting_traffic}
@@ -1251,7 +1256,7 @@ the afternoon.
 
 ### Peak Commuting Times According to Model
 
-Now that we have a model for commuting traffic, when are the peak times?
+Now, that we have a model for commuting traffic, when are the peak times?
 
 ```{r peak_to_peak_time_calculation}
 morning <- bike_cnt_15_min_modeled %>% filter(!afternoon)
@@ -1359,7 +1364,7 @@ bike_cnt_15_min_modeled %>%
 ```
 
 As a last part of the peak analysis we compare the total bike counts within the modeled peaks 
-to see, whether those are comparable:
+to see whether those are comparable:
 
 ```{r morning_and_afternoon_commuting_counts}
  bike_cnt_15_min %>% 
@@ -1381,7 +1386,7 @@ only would drive to work in the morning and back home in the afternoon, one woul
 two values to be equal. However, one explanation for this inequality could be that, once
 people finished their work, they don't drive home immediately but go for other activities.
 These activities could be sports, meeting friends or doing the grocery, for instance.
-Thus, they would perhaps pass the counting stations more than once or pass a counting stations
+Thus, they would perhaps pass the counting stations more than once or pass a counting station
 which normally doesn't lie on their commuting route. This could lead to the
 higher counts in the afternoon and would also be a explanation for some counts occurring very late in the
 evening (past 10pm).
@@ -1424,18 +1429,18 @@ and found it as exciting as I did.
 
 Let's quickly sum up our analysis:
 
-* To get a first overview, we created a map with all the stations
+* To get a first overview, we created a map with all the stations.
 * We created a summary across all stations and for each station separately where we looked at the 
-average 15 minute and daily counts for instance. Further, we found out that Erhardt is the most
+average 15 minute and daily counts, for instance. Further, we found out that Erhardt is the most
 frequented
-station and Kreuther has the fewest bike counts
+station and Kreuther has the fewest bike counts.
 * We found out that 5.8% of daily counted bikes at Arnulf Street arise from people driving at 
 the wrong side of the road
 * We had a closer look on bike count records and found out about events like Münchner Ringparade 
-and the 24h Mountain Bike Race in Munich
-* Additionally we tried to figure out when most people are biking and how these days look like
+and the 24h Mountain Bike Race in Munich.
+* Additionally we tried to figure out when most people are biking and how these days look like.
 * Finally we modeled the commuting traffic. Even if our commuting model is by far not perfect, 
-it gave us some interesting insights on peak commuting times
+it gave us some interesting insights on peak commuting times.
 
 
 Before I finish, I want to thank the Munich Open Data Team - especially Frank Börger - for their
