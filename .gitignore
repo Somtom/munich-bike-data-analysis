@@ -4,3 +4,7 @@
 .Ruserdata
 *.nb.html
 *.Rproj
+infographic/
+analysis/
+questions-on-the-data
+things-to-improve.txt
