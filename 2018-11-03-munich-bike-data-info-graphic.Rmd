@@ -6,12 +6,12 @@ slug: munich-bike-data-info-graphic
 categories:
   - Analysis
   - Infographic
+output:
+    html_notebook
 tags:
   - Munich Open Data
   - R
   - Bike Data
-output:
-  html_notebook
 image: https://somtom.github.io/img/preview-images/munich-bike-data-infographic-preview.png
 header:
   image: "./headers/munich-bike-data-infographic-header.png"
@@ -37,9 +37,9 @@ as some nice inspirations. I picked up the idea of creating a info-graphic about
 Thus, I had a new project and started the journey of designing my first info-graphic.
 
 In this post we will go through the analysis behind the info-graphic you already saw above. 
-We will answer questions such as:
+We are going to answer questions such as:
 
-* [Can we create a map of all counting stations?](#map)
+* [Can we create a map of all counting stations?](#station_map)
 * [What are average 15 minute and daily counts (across stations and per station)?](#average_counts)
 * [How many people are driving in the wrong direction at Arnulf Street
 (this station is at a one-way road)?](#wrong_direction)
@@ -111,7 +111,7 @@ knitr::opts_chunk$set(
 
 # Import Data from API
 Now, after setting everything up, we need to load the data. Since I got some additional data in 
-`.csv` format, the importing will happen in two steps:
+`.csv` format, the importing happens in two steps:
 
 1. We import the data from 2017 and 2018 via the Munich Open Data API
 2. We import the additional data from `.csv` format
@@ -392,7 +392,7 @@ muc_odp_add_direction_info <- function(dt) {
 
 ## (1) Fetch Data from API
 
-The following chunks will import the data from the years 2017 and 2018 (until end of July):
+The following chunks will import the data for the years 2017 and 2018 (until end of July):
 
 ```{r get_ressource_ids, eval=FALSE}
 # Import muc_opd helper functions
@@ -450,7 +450,7 @@ bike_cnt_15_min <- bind_rows(additional_15_min_data, bike_cnt_15_min)
 
 # Preprocessing {#preprocessing}
 
-To prepare the data for the analysis we will perform the following steps: 
+To prepare the data for the analysis we perform the following steps: 
 
 1. Convert data types (i.e. `character` to `POSIXct` for dates)
 2. Gather the direction columns (`richtung_1` and `richtung_2`) into one `direction` column
@@ -554,7 +554,7 @@ bike_cnt_day %>%
   map(function(x) sum(is.na(x))) %>% 
   bind_cols %>%
   melt(value.name = "na_count", variable.name = "column") %>% 
-  filter(na_count > 0) %>% knitr::kable(digits = 1)
+  filter(na_count > 0) %>% knitr::kable(digits = 2)
 ```
 
 We see that some weather data and ids are missing for the `bike_cnt_day` table. 
@@ -571,7 +571,7 @@ bike_cnt_15_min %>%
 
 No data are missing for `bike_cnt_15_min` table.
 
-## Map of Stations {#map}
+## Map of Stations {#station_map}
 
 To get a first overview of the locations of the 6 counting stations, we create a map of Munich using the `ggmap`
 package and add markers for each station.
@@ -609,7 +609,7 @@ bind_rows(
   c(
     table = "bike_cnt_15_min", 
     broom::tidy(summary(bike_cnt_15_min$gesamt)),
-    sd = sd(bike_cnt_15_min$gesamt)))  %>% knitr::kable(digits = 1)
+    sd = sd(bike_cnt_15_min$gesamt)))  %>% knitr::kable(digits = 2)
 ```
 
 On average the stations count **`r round(mean(bike_cnt_15_min$gesamt))` bike per 15 minutes** and 
@@ -639,7 +639,7 @@ station_summary_15_min <- bike_cnt_15_min %>%
   mutate(scaled_median_count = round(median_count / min(median_count))) %>% 
   arrange(desc(median_count)) 
 
-station_summary_15_min  %>% knitr::kable(digits = 1)
+station_summary_15_min  %>% knitr::kable(digits = 2)
 ```
 
 As we see, Erhardt is the station with the highest median 
@@ -665,7 +665,7 @@ station_summary_day <- bike_cnt_day %>%
   mutate(scaled_median_count = round(median_count / min(median_count))) %>% 
   arrange(desc(median_count)) 
 
-station_summary_day  %>% knitr::kable(digits = 1)
+station_summary_day  %>% knitr::kable(digits = 2)
 ```
 
 We see a similar picture compared to the 15 minute data. With a median daily bike count of
@@ -689,7 +689,7 @@ wrong_way_drivers <- bike_cnt_day %>%
   filter(direction == "out of center") %>%
   mutate(share = round(count / gesamt * 100, 2)) %>% 
   select(share) %>% unlist() %>% summary() %>% tidy()
-wrong_way_drivers  %>% knitr::kable(digits = 1)
+wrong_way_drivers  %>% knitr::kable(digits = 2)
 ```
 
 The data suggests that on average **`r round(wrong_way_drivers$mean, 1)` percent**
@@ -712,7 +712,7 @@ top_10_day <- bike_cnt_day %>%
 
 top_10_day %>% 
   select(datum, gesamt, zaehlstelle) %>% 
-  knitr::kable(digits = 1)
+  knitr::kable(digits = 2)
 ```
 
 That is interesting: Station Olympia takes the top 3 places with counts above 10 thousand, although 
@@ -789,12 +789,12 @@ top_10_15_min <- bike_cnt_15_min %>%
   head(10)
 
 top_10_15_min  %>% 
-  select(datum, gesamt, uhrzeit_start, zaehlstelle) %>% knitr::kable(digits = 1)
+  select(datum, gesamt, uhrzeit_start, zaehlstelle) %>% knitr::kable(digits = 2)
 ```
 
 If we have a closer look, we only can find one of our daily count top 10 candidates in this list,
 namely the **2017-06-09** on the 6th place. Normally you would suppose the date with highest 15
-minute counts to also be listed in the daily count top 10 if the high counts were not due to
+minute counts to also be listed in the daily count top 10 unless the high counts were due to
 a short time event. So what happened on the 3rd September
 2017 when a 15 minute bike count of **1157** was recorded? 
 
@@ -857,7 +857,7 @@ annotations <- data.frame(
     levels = c("Arnulf","Erhardt", "Kreuther", "Olympia", "Margareten",  "Hirsch")),
   ann_label = c("The two peaks in 2013 and 2014 might be\ndue to railway construction sites", 
                 "We can see a rising bike count trend at station Hirsch",
-                "The missing data and the small peak is due to a construction site\nat the counting station: A separate bicycle path was created.\nAfter that the bikes on the sidewalk were not counted anymore."),
+                "The missing data and the small peak is due to a construction site\nat the counting station: A separate bicycle path was created.\nAfter that, the bikes on the sidewalk were not counted anymore."),
   ann_x = c(as.POSIXct("2009-01-01"),
             as.POSIXct("2011-01-01"),
             as.POSIXct("2014-01-01")),
@@ -891,7 +891,7 @@ This is why daily bike count level dropped afterwards.
 * One can clearly see the events taking place in **Olympia Park** represented by peaks in the data
 
 When we plot the bike count distribution for each month, we see that **highest median bike 
-counts occur in the Month July**. However, the maximum counts had been recorded in June. 
+counts occur in the month July**. However, the maximum counts had been recorded in June. 
 These are due to some of the record events mentioned earlier, though. 
 Thus, they need to be interpreted as outliers
 
@@ -941,7 +941,7 @@ To do so we group the bike counts into 4 categories:
 * **Upper Middle:** Daily bike counts which lie between the **median** and the **75% percentile**
 * **Highest 25%:** Daily bike counts which lie between the **75% percentile** and the **maximum**
 
-We than will have a closer look into the **"Highest 25%"** group and the weather parameters 
+We then will have a closer look into the **"Highest 25%"** group and the weather parameters 
 measured on these days.
 
 To make the data comparable between stations, we perform the following steps:
@@ -989,7 +989,7 @@ bike_cnt_day_july_scaled <- bike_cnt_day %>%
 
 
 
-```{r temperature_and_weather_distribution_for_maximum_days, fig.width=10, echo=FALSE}
+```{r temperature_and_weather_distribution_for_maximum_days, fig.width=10, fig.height=8, echo=FALSE}
 
 bike_cnt_day_july_scaled %>%
   gather(key = metric, value = value, -cat) %>% 
@@ -1055,7 +1055,7 @@ bike_cnt_day_july_scaled %>%
                                   "min_temp" = "Minimum Temperature [°C]",
                                   "niederschlag" = "Precipitation  [ml]",
                                   "sonnenstunden" = "Hours of Sunshine [h]"))) %>% 
-  select(-na, -cat)  %>% knitr::kable(digits = 1)
+  select(-na, -cat)  %>% knitr::kable(digits = 2)
 
 ```
 
@@ -1091,7 +1091,7 @@ tmp %>%
   xlab("Time of the Day") +
   ylab("Bikes per 15 Minute") +
   ggtitle("The median 15 minute bike counts differ between weekend days and week days",
-          paste("There are clear commuting peaks in the morning and in the afternoon during the week,",
+          paste("There are clear commuting peaks in the morning and in the afternoon during the week",
                 "with regular traffic inbetween")) +
   my_theme +
   guides(fill = FALSE, color = FALSE)
@@ -1103,7 +1103,7 @@ traffic between these peaks.
 We used the median 15 minute bike count across all stations for the previous plot.
 But, will we still see the same pattern if we look at each station separately?
 
-```{r 15_min_plot_weekend_week_per_station, fig.height=10, fig.width=13, echo=FALSE}
+```{r 15_min_plot_weekend_week_per_station, fig.height=15, fig.width=13, echo=FALSE}
 
 annotations <- data.frame(
   zaehlstelle = factor(
@@ -1166,7 +1166,7 @@ into class 3.
 
 ### The Model
 
-To create a really basic model of the commuting traffic, we will make the following assumption:
+To create a really basic model of the commuting traffic, we make the following assumption:
 *Traffic during week is the result of commuting traffic and the normal traffic which is represented
 by the weekend data.* 
 Under this assumption subtracting the 15 minute weekend counts from the 15 minute counts during 
@@ -1381,7 +1381,7 @@ to see whether those are comparable:
                        "afternoon")) %>%  
   filter(weekend == "Week") %>% 
   group_by(peak) %>% 
-  summarise(bike_count = sum(median))  %>% knitr::kable(digits = 1)
+  summarise(bike_count = sum(median))  %>% knitr::kable(digits = 2)
 ```
 
 We see that the counts in the afternoon are twice as high as the morning counts. If people
@@ -1416,7 +1416,7 @@ commuting_share <- bike_cnt_day %>%
 
 commuting_share %>% 
   select(zaehlstelle, share_commuting, mean_share_commuting, median_share_commuting) %>% 
-  knitr::kable(digits = 1)
+  knitr::kable(digits = 2)
 ```
 
 The modeled share of commuting traffic varies between the station and ranges from 
@@ -1452,7 +1452,7 @@ Also, great thanks to my friends and colleagues Ryan, Stephie, Flo and Pat for p
 
 It's getting winter now as I am writing this post,
 but I hope that your new knowledge about bike counts in Munich motivates
-you to also go out and ride your bike. Maybe your living in Munich and want to add a few counts 
+you to also go out and ride your bike. Maybe you are living in Munich and want to add a few counts 
 to the stations. If not, perhaps your city also has similar counting stations which you can check out.
 Try to do some research!
 
