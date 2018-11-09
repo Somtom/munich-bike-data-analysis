@@ -6,12 +6,12 @@ slug: munich-bike-data-info-graphic
 categories:
   - Analysis
   - Infographic
-output:
-    html_notebook
 tags:
   - Munich Open Data
   - R
   - Bike Data
+output:
+    html_notebook
 image: https://somtom.github.io/img/preview-images/munich-bike-data-infographic-preview.png
 header:
   image: "./headers/munich-bike-data-infographic-header.png"
@@ -1446,7 +1446,8 @@ and the 24h Mountain Bike Race in Munich.
 it gave us some interesting insights on peak commuting times.
 
 
-Before I finish, I want to thank the Munich Open Data Team - especially Frank Börger - for their
+Before I finish, I want to thank the Munich Open Data Team - especially Frank Börger and his coworker
+Lukas Raffl - for their
 great support and for providing me with inspirations and additional data.
 Also, great thanks to my friends and colleagues Ryan, Stephie, Flo and my girlfriend Samira for proof reading!
 
