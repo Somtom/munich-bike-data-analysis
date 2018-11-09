@@ -1448,7 +1448,7 @@ it gave us some interesting insights on peak commuting times.
 
 Before I finish, I want to thank the Munich Open Data Team - especially Frank Börger - for their
 great support and for providing me with inspirations and additional data.
-Also, great thanks to my friends and colleagues Ryan, Stephie, Flo and Pat for proof reading!
+Also, great thanks to my friends and colleagues Ryan, Stephie, Flo and my girlfriend Samira for proof reading!
 
 It's getting winter now as I am writing this post,
 but I hope that your new knowledge about bike counts in Munich motivates
